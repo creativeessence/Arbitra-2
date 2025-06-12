@@ -1,0 +1,38 @@
+{
+  "name": "arbitra-2",
+  "version": "1.0.0",
+  "description": "Opensea + Blur Bidding // Offer Acceptor Software",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "lint": "eslint src/**/*.js",
+    "format": "prettier --write 'src/**/*.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/creativeessence/Arbitra-2.git"
+  },
+  "keywords": ["nft", "opensea", "blur", "bidding", "trading"],
+  "author": "Connor Daly (creativeessence)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/creativeessence/Arbitra-2/issues"
+  },
+  "homepage": "https://github.com/creativeessence/Arbitra-2#readme",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "ethers": "^6.7.0",
+    "winston": "^3.10.0",
+    "axios": "^1.4.0",
+    "web3": "^4.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.6.2",
+    "nodemon": "^3.0.1",
+    "eslint": "^8.45.0",
+    "prettier": "^3.0.0"
+  }
+}

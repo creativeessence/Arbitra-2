@@ -2,7 +2,7 @@
 Opensea + Blur Bidding // Offer Acceptor Software
 
 A2-BLUR-Bids
-nothing wrong with it runs smoothly and stored percectly - no changes needed
+nothing wrong with it runs smoothly and stored perfectly - no changes needed
 
 a2-opensea-bids
 nothing wrong with it runs smoothly, need to check if it needs the extra API call to begin with. monitoring for Order Invalidation if order is not valid then 
