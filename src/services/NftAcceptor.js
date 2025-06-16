@@ -30,7 +30,7 @@ class NftAcceptor extends EventEmitter {
 
     this.#processingQueue = true;
     const operation = this.#acceptanceQueue.shift();
-    
+
     try {
       await operation();
     } catch (error) {
@@ -46,16 +46,14 @@ class NftAcceptor extends EventEmitter {
     try {
       const filter = {
         address: config.wallet.address,
-        topics: [
-          ethers.id('Transfer(address,address,uint256)')
-        ]
+        topics: [ethers.id('Transfer(address,address,uint256)')],
       };
 
       this.provider.on(filter, async (log) => {
         const nft = {
           collection: log.address,
           tokenId: log.topics[3],
-          platform: this.determinePlatform(log)
+          platform: this.determinePlatform(log),
         };
 
         this.emit('nftReceived', nft);
@@ -84,7 +82,9 @@ class NftAcceptor extends EventEmitter {
         }
 
         await this.submitAcceptance(nft.platform, acceptanceData);
-        logger.info(`Successfully accepted NFT ${nft.tokenId} on ${nft.platform}`);
+        logger.info(
+          `Successfully accepted NFT ${nft.tokenId} on ${nft.platform}`,
+        );
       } catch (error) {
         logger.error(`Error handling NFT ${nft.tokenId}:`, error);
         throw error;
@@ -103,7 +103,10 @@ class NftAcceptor extends EventEmitter {
       }
       return null;
     } catch (error) {
-      logger.error(`Error preparing acceptance data for ${nft.platform}:`, error);
+      logger.error(
+        `Error preparing acceptance data for ${nft.platform}:`,
+        error,
+      );
       return null;
     }
   }
@@ -112,7 +115,7 @@ class NftAcceptor extends EventEmitter {
     try {
       const tx = await this.createTransaction(platform, data);
       const receipt = await tx.wait();
-      
+
       logger.info(`Transaction successful: ${receipt.hash}`);
       return receipt;
     } catch (error) {
@@ -146,8 +149,12 @@ class NftAcceptor extends EventEmitter {
       // This should use the current network conditions
       return {
         gasLimit: 300000,
-        maxFeePerGas: await this.provider.getFeeData().then(fee => fee.maxFeePerGas),
-        maxPriorityFeePerGas: await this.provider.getFeeData().then(fee => fee.maxPriorityFeePerGas)
+        maxFeePerGas: await this.provider
+          .getFeeData()
+          .then((fee) => fee.maxFeePerGas),
+        maxPriorityFeePerGas: await this.provider
+          .getFeeData()
+          .then((fee) => fee.maxPriorityFeePerGas),
       };
     } catch (error) {
       logger.error('Error estimating gas:', error);
@@ -156,4 +163,4 @@ class NftAcceptor extends EventEmitter {
   }
 }
 
-export default new NftAcceptor(); 
+export default new NftAcceptor();

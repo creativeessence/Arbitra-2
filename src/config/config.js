@@ -10,7 +10,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const config = {
   // Network configuration
   network: {
-    rpcUrl: process.env.RPC_URL || 'https://eth-mainnet.g.alchemy.com/v2/your-api-key',
+    rpcUrl:
+      process.env.RPC_URL ||
+      'https://eth-mainnet.g.alchemy.com/v2/your-api-key',
     chainId: parseInt(process.env.CHAIN_ID || '1'),
     maxGasPrice: process.env.MAX_GAS_PRICE || '100',
     maxPriorityFee: process.env.MAX_PRIORITY_FEE || '2',
@@ -68,8 +70,12 @@ const config = {
   // Monitoring configuration
   monitoring: {
     checkInterval: parseInt(process.env.CHECK_INTERVAL || '60000'),
-    orderInvalidationCheck: parseInt(process.env.ORDER_INVALIDATION_CHECK || '300000'),
-    collections: process.env.COLLECTIONS ? JSON.parse(process.env.COLLECTIONS) : [],
+    orderInvalidationCheck: parseInt(
+      process.env.ORDER_INVALIDATION_CHECK || '300000',
+    ),
+    collections: process.env.COLLECTIONS
+      ? JSON.parse(process.env.COLLECTIONS)
+      : [],
   },
 
   // Queue configuration
@@ -91,12 +97,14 @@ const validateConfig = () => {
     'WALLET_ADDRESS',
     'OPENSEA_API_KEY',
     'BLUR_API_KEY',
-    'ALCHEMY_API_KEY'
+    'ALCHEMY_API_KEY',
   ];
 
-  const missing = required.filter(key => !process.env[key]);
+  const missing = required.filter((key) => !process.env[key]);
   if (missing.length > 0) {
-    throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
+    throw new Error(
+      `Missing required environment variables: ${missing.join(', ')}`,
+    );
   }
 
   // Validate wallet address format
@@ -110,11 +118,17 @@ const validateConfig = () => {
   }
 
   // Validate bid amounts
-  if (parseFloat(config.bid.blur.minBidAmount) >= parseFloat(config.bid.blur.maxBidAmount)) {
+  if (
+    parseFloat(config.bid.blur.minBidAmount) >=
+    parseFloat(config.bid.blur.maxBidAmount)
+  ) {
     throw new Error('Blur min bid amount must be less than max bid amount');
   }
 
-  if (parseFloat(config.bid.opensea.minBidAmount) >= parseFloat(config.bid.opensea.maxBidAmount)) {
+  if (
+    parseFloat(config.bid.opensea.minBidAmount) >=
+    parseFloat(config.bid.opensea.maxBidAmount)
+  ) {
     throw new Error('OpenSea min bid amount must be less than max bid amount');
   }
 };

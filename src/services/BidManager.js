@@ -29,7 +29,7 @@ class BidManager extends EventEmitter {
 
     this.#processingQueue = true;
     const operation = this.#bidQueue.shift();
-    
+
     try {
       await operation();
     } catch (error) {
@@ -48,7 +48,7 @@ class BidManager extends EventEmitter {
       if (!openseaOrder.valid) {
         this.invalidOrders.add(collection);
         this.emit('orderInvalidated', { collection, platform: 'opensea' });
-        
+
         // Cancel corresponding Blur bid if exists
         const blurBid = this.activeBids.get(collection)?.blur;
         if (blurBid) {
@@ -63,21 +63,25 @@ class BidManager extends EventEmitter {
         this.emit('orderInvalidated', { collection, platform: 'blur' });
       }
     } catch (error) {
-      logger.error(`Error monitoring bid invalidation for ${collection}:`, error);
+      logger.error(
+        `Error monitoring bid invalidation for ${collection}:`,
+        error,
+      );
     }
   }
 
   // Calculate bid amounts with gas consideration
   async calculateBidAmount(platform, currentBid, collection) {
     const gasEstimate = await this.estimateGasCost(platform);
-    const baseAmount = platform === 'blur' 
-      ? this.calculateBlurAmount(currentBid)
-      : this.calculateOpenSeaAmount(currentBid);
+    const baseAmount =
+      platform === 'blur'
+        ? this.calculateBlurAmount(currentBid)
+        : this.calculateOpenSeaAmount(currentBid);
 
     return {
       amount: baseAmount,
       gasCost: gasEstimate,
-      totalCost: baseAmount + gasEstimate
+      totalCost: baseAmount + gasEstimate,
     };
   }
 
@@ -106,12 +110,12 @@ class BidManager extends EventEmitter {
         } else {
           await this.submitOpenSeaBid(collection, amount);
         }
-        
+
         // Update active bids
         const currentBids = this.activeBids.get(collection) || {};
         this.activeBids.set(collection, {
           ...currentBids,
-          [platform]: amount
+          [platform]: amount,
         });
 
         logger.info(`Successfully submitted ${platform} bid for ${collection}`);
@@ -183,4 +187,4 @@ class BidManager extends EventEmitter {
   }
 }
 
-export default new BidManager(); 
+export default new BidManager();

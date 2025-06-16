@@ -8,7 +8,7 @@ const initialize = async () => {
   try {
     // Validate configuration
     validateConfig();
-    
+
     logger.info('Starting Arbitra-2 application...');
     logger.info('Configuration loaded successfully');
 
