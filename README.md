@@ -1,27 +1,104 @@
 # Arbitra-2
-Opensea + Blur Bidding // Offer Acceptor Software
 
-A2-BLUR-Bids
-nothing wrong with it runs smoothly and stored perfectly - no changes needed
+A sophisticated NFT trading automation system that manages bidding and offer acceptance across OpenSea and Blur marketplaces.
 
-a2-opensea-bids
-nothing wrong with it runs smoothly, need to check if it needs the extra API call to begin with. monitoring for Order Invalidation if order is not valid then 
+## Project Structure
 
-A3 - blur amount
-nothing wrong takes 0.005 eth off bid and then rounds to nearest 0.01 based on opensea bid
+```
+src/
+├── config/         # Configuration management
+├── services/       # Core services
+├── utils/          # Utility functions
+├── models/         # Data models
+└── events/         # Event handlers
+```
 
-A3 - opensea amount
-nothing wrong takes 0.005 eth off bid and then based on blur bid makes offer. If offer is higher already we submit our max
-if lower we then outbid by 0.00001
+## Features
 
-a4 - submit blur
-calculates and submits bids perfectly. Just need to ensure it checks for current bids and if it matches then we keep, remove or update our bids for blur. Make it event based.
+- Bid management for both OpenSea and Blur
+- Automatic offer acceptance
+- Gas-aware bid calculations
+- Order invalidation monitoring
+- Priority-based operation queue
+- Comprehensive logging
+- Error handling and recovery
 
-a4 - submit opensea
-****** cannot work out how to do this what so ever. will get Danu to do it for me. Only got the build-offer.cjs working which is 1/2 way their.
+## Setup
 
-a5 - blur acceptor
-Works fully by monitoring NFT's in wallet, if ones detected then we auto-generate everything that's needed to submit onchain. Only onchain part won't work only thing that needs doing is being able to submit onchain.
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Copy `.env.example` to `.env` and fill in your configuration:
+   ```bash
+   cp .env.example .env
+   ```
+4. Configure your environment variables in `.env`
 
-a5 - opensea acceptor
-works fully by monitoring NFT's in wallet, if one detected then we auto-generate everything that's needed to submit onchain. Only need to add onchain submission!
+## Configuration
+
+The system is configured through environment variables. See `.env.example` for all available options.
+
+### Required Variables
+
+- `RPC_URL`: Your Ethereum node RPC URL
+- `PRIVATE_KEY`: Your wallet's private key
+- `WALLET_ADDRESS`: Your wallet address
+- `OPENSEA_API_KEY`: OpenSea API key
+- `BLUR_API_KEY`: Blur API key
+- `ALCHEMY_API_KEY`: Alchemy API key
+
+### Optional Variables
+
+- Bid amounts and deductions
+- Gas limits and prices
+- Logging configuration
+- Monitoring intervals
+- Queue settings
+
+## Development
+
+```bash
+# Start in development mode
+npm run dev
+
+# Run tests
+npm test
+
+# Lint code
+npm run lint
+
+# Format code
+npm run format
+```
+
+## Architecture
+
+### BidManager
+
+Handles all bid-related operations:
+- Bid calculation with gas consideration
+- Order invalidation monitoring
+- Priority-based bid submission
+- Automatic bid cancellation
+
+### NftAcceptor
+
+Manages NFT acceptance:
+- Wallet monitoring
+- On-chain transaction submission
+- Gas optimization
+- Platform-specific handling
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+ISC

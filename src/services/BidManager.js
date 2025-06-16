@@ -82,19 +82,19 @@ class BidManager extends EventEmitter {
   }
 
   calculateBlurAmount(currentBid) {
-    const amount = currentBid - 0.005; // Deduct 0.005 ETH
+    const amount = currentBid - config.bid.blur.bidDeduction; // Deduct 0.005 ETH
     return Math.floor(amount * 100) / 100; // Round to nearest 0.01
   }
 
   calculateOpenSeaAmount(currentBid) {
-    const amount = currentBid - 0.005; // Deduct 0.005 ETH
-    return amount + 0.00001; // Add 0.00001 for outbidding
+    const amount = currentBid - config.bid.opensea.bidDeduction; // Deduct 0.005 ETH
+    return amount + config.bid.opensea.outbidAmount; // Add 0.00001 for outbidding
   }
 
   async estimateGasCost(platform) {
     // TODO: Implement actual gas estimation
     // This should use the current network conditions
-    return 0.001; // Placeholder
+    return config.bid[platform].gasCost; // Placeholder
   }
 
   // Submit bids with priority handling
