@@ -4,7 +4,7 @@
  * 1. Fetch NFTs for OWNER_ADDRESS via Alchemy.
  * 2. Filter by collections.json (contract_address → slug).
  * 3. For each matching NFT:
- *    a) GET its “best offer” from OpenSea (print raw JSON).
+ *    a) GET its “best offer” from Opensea (print raw JSON).
  *    b) POST to /offers/fulfillment_data with:
  *         { offer: { hash, chain, protocol_address },
  *           fulfiller: { address: OWNER_ADDRESS },
@@ -110,7 +110,7 @@ collections.forEach((c) => {
       });
     } catch (err) {
       console.error(
-        `❌ Error fetching OpenSea offer for ${slug} #${tokenId}:`,
+        `❌ Error fetching Opensea offer for ${slug} #${tokenId}:`,
         err.response?.status,
         err.response?.data || err.message
       );

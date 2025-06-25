@@ -6,10 +6,11 @@ import NftAcceptor from './services/NftAcceptor.js';
 // Initialize application
 const initialize = async () => {
   try {
+    logger.info('Starting Arbitra-2 application...');
+
     // Validate configuration
     validateConfig();
 
-    logger.info('Starting Arbitra-2 application...');
     logger.info('Configuration loaded successfully');
 
     // Initialize services

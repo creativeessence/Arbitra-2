@@ -68,7 +68,7 @@ class NftAcceptor extends EventEmitter {
 
   determinePlatform(log) {
     // TODO: Implement platform determination logic
-    // This should check the contract address against known OpenSea and Blur contracts
+    // This should check the contract address against known Opensea and Blur contracts
     return 'unknown';
   }
 
@@ -99,7 +99,7 @@ class NftAcceptor extends EventEmitter {
       if (nft.platform === 'blur') {
         return await this.prepareBlurAcceptance(nft);
       } else if (nft.platform === 'opensea') {
-        return await this.prepareOpenSeaAcceptance(nft);
+        return await this.prepareOpenseaAcceptance(nft);
       }
       return null;
     } catch (error) {
@@ -137,8 +137,8 @@ class NftAcceptor extends EventEmitter {
     return null;
   }
 
-  async prepareOpenSeaAcceptance(nft) {
-    // TODO: Implement OpenSea acceptance preparation
+  async prepareOpenseaAcceptance(nft) {
+    // TODO: Implement Opensea acceptance preparation
     return null;
   }
 

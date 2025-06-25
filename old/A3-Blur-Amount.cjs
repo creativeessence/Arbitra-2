@@ -3,7 +3,7 @@ const { createClient } = require("redis");
 const PROFIT_MARGIN = 0.005;  // minimum ETH you want to net
 
 /**
- * Given an OpenSea offer in ETH, subtract your profit margin,
+ * Given an Opensea offer in ETH, subtract your profit margin,
  * then floor to the nearest 0.01 ETH and return that.
  *
  * e.g. osOfferEth = 0.199:
@@ -24,7 +24,7 @@ async function main() {
 
   const osKeys = await client.keys("c-offer:opensea:*");
   if (!osKeys.length) {
-    console.log("No OpenSea collection offers found in Redis.");
+    console.log("No Opensea collection offers found in Redis.");
     await client.quit();
     return;
   }
@@ -35,7 +35,7 @@ async function main() {
     const contract = key.split(":")[2];
     const osRaw    = await client.get(key);
     if (!osRaw) {
-      console.log(`• ${contract}: no OpenSea data`);
+      console.log(`• ${contract}: no Opensea data`);
       continue;
     }
 
@@ -44,15 +44,15 @@ async function main() {
       const osData    = JSON.parse(osRaw);
       osOfferEth      = parseFloat(osData.price_per_nft.readable);
     } catch {
-      console.log(`• ${contract}: invalid OpenSea JSON`);
+      console.log(`• ${contract}: invalid Opensea JSON`);
       continue;
     }
 
     const bidEth = calculateBidWithMargin(osOfferEth);
     console.log(
       bidEth > 0
-        ? `• ${contract}: OpenSea @ ${osOfferEth.toFixed(3)} → bid @ ${bidEth.toFixed(2)} ETH`
-        : `• ${contract}: OpenSea @ ${osOfferEth.toFixed(3)} → bid too low (would be ≤ 0)`
+        ? `• ${contract}: Opensea @ ${osOfferEth.toFixed(3)} → bid @ ${bidEth.toFixed(2)} ETH`
+        : `• ${contract}: Opensea @ ${osOfferEth.toFixed(3)} → bid too low (would be ≤ 0)`
     );
   }
 

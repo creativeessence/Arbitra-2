@@ -6,7 +6,7 @@
  * 2) Every 500 ms, re-fetches each collection’s top offer and, if the order_hash
  *    differs from what’s in Redis, updates Redis (so the stored “top bid” is always current).
  *
- * 3) Connects to the OpenSea Stream WebSocket (wss://stream.openseabeta.com/socket/websocket),
+ * 3) Connects to the Opensea Stream WebSocket (wss://stream.openseabeta.com/socket/websocket),
  *    subscribes to each collection’s topic (collection:{slug}), and listens for “order_invalidate”.
  *    If an invalidation matches the Redis‐stored order_hash, immediately re-fetch that slug’s
  *    top offer and update Redis.
@@ -207,7 +207,7 @@ async function fetchFirstOfferForSlug(slug) {
     let heartbeatInterval = null;
 
     ws.on('open', () => {
-      console.log('[WS] Connected to OpenSea Stream API.');
+      console.log('[WS] Connected to Opensea Stream API.');
 
       // Send initial heartbeat, then every 30 s
       const hbMsg = { topic: 'phoenix', event: 'heartbeat', payload: {}, ref: 0 };

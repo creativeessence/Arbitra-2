@@ -4,7 +4,7 @@
  *
  * Reads all collections from collections.json and, for each:
  *  1. Fetches the Blur bid from Redis.
- *  2. Fetches the OpenSea bid JSON from Redis.
+ *  2. Fetches the Opensea bid JSON from Redis.
  *  3. Computes the optimal bid (capped by blurBid − PROFIT_MARGIN, or osBid + MIN_INCREMENT).
  *  4. Prints slug, contract_address, blurBid, osBid, maxBid, and finalBid.
  *
@@ -65,7 +65,7 @@ async function getBlurBid(client, collectionAddr) {
 }
 
 /**
- * Fetch the current OpenSea bid JSON for a given collection from Redis.
+ * Fetch the current Opensea bid JSON for a given collection from Redis.
  * Key format: "c-offer:opensea:<collection_addr>"
  * Parses the JSON and returns price_per_nft.readable as a float (e.g. "0.198" → 0.198).
  */
@@ -73,13 +73,13 @@ async function getOpenseaBid(client, collectionAddr) {
   const key = `c-offer:opensea:${collectionAddr}`;
   const raw = await client.get(key);
   if (raw === null) {
-    throw new Error(`(OpenSea) No entry at Redis key "${key}"`);
+    throw new Error(`(Opensea) No entry at Redis key "${key}"`);
   }
   let data;
   try {
     data = JSON.parse(raw.toString());
   } catch (err) {
-    throw new Error(`Failed to JSON.parse OpenSea bid: ${err.message}`);
+    throw new Error(`Failed to JSON.parse Opensea bid: ${err.message}`);
   }
   const readable = data?.price_per_nft?.readable;
   if (typeof readable !== 'string') {
@@ -87,7 +87,7 @@ async function getOpenseaBid(client, collectionAddr) {
   }
   const osBid = parseFloat(readable);
   if (isNaN(osBid)) {
-    throw new Error(`Failed to parse OpenSea "readable" price "${readable}" as a float`);
+    throw new Error(`Failed to parse Opensea "readable" price "${readable}" as a float`);
   }
   return osBid;
 }
@@ -95,11 +95,11 @@ async function getOpenseaBid(client, collectionAddr) {
 /**
  * Given:
  *   - blurBid     (float): current Blur bid (ETH)
- *   - osBid       (float): current highest OpenSea bid (ETH)
+ *   - osBid       (float): current highest Opensea bid (ETH)
  *   - profitMargin(float): desired minimum profit (ETH)
  *   - minIncrement(float): smallest outbid increment (ETH)
  * Returns:
- *   - bidAmount (float): ETH amount we should submit on OpenSea
+ *   - bidAmount (float): ETH amount we should submit on Opensea
  */
 function computeBidAmount(blurBid, osBid, profitMargin, minIncrement) {
   const maxBid = blurBid - profitMargin;
@@ -166,7 +166,7 @@ async function main() {
       // 3a. Fetch Blur bid
       const blurBid = await getBlurBid(client, contract);
 
-      // 3b. Fetch OpenSea bid
+      // 3b. Fetch Opensea bid
       const osBid = await getOpenseaBid(client, contract);
 
       // 3c. Compute our final bid
@@ -176,7 +176,7 @@ async function main() {
       // 3d. Print results
       console.log(
         `Blur=${blurBid.toFixed(6)} ETH,  ` +
-        `OpenSea=${osBid.toFixed(6)} ETH,  ` +
+        `Opensea=${osBid.toFixed(6)} ETH,  ` +
         `Max=${maxBid.toFixed(6)} ETH,  ` +
         `→ Bid ${finalBid.toFixed(5)} ETH`
       );

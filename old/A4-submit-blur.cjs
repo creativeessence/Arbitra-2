@@ -1,5 +1,5 @@
 /**
- * Blur Bidder – Monitor both OpenSea and Blur “best offer” changes
+ * Blur Bidder – Monitor both Opensea and Blur “best offer” changes
  * and maintain a Blur collection bid at PROFIT_MARGIN below the highest reported price.
  *
  * – Watches Redis keys:
@@ -8,10 +8,10 @@
  *         – JSON { bestPrice: "<eth>", totalValue: "<…>" }
  *         – Or a bare numeric string like "0.18" (if that’s how your upstream writes it)
  *
- * – Logs immediately on startup for any existing OpenSea keys (and submits bids),
+ * – Logs immediately on startup for any existing Opensea keys (and submits bids),
  *   but does NOT act on existing Blur keys at startup—only on their changes after startup.
  *
- * – Whenever *any* watched JSON changes (OpenSea or Blur), logs that change (old → new), then
+ * – Whenever *any* watched JSON changes (Opensea or Blur), logs that change (old → new), then
  *   extracts the relevant numeric field to recalc our Blur bid:
  *     bidEth = floor((observedPrice − PROFIT_MARGIN) * 100) / 100
  *
@@ -78,9 +78,9 @@ const BLUR = axios.create({
   },
 });
 
-// lastSeenOpenSea: Map<contract, string>  — last raw JSON seen for each OpenSea key
+// lastSeenOpensea: Map<contract, string>  — last raw JSON seen for each Opensea key
 // lastSeenBlur:   Map<contract, string>  — last raw string seen for each Blur key
-const lastSeenOpenSea = new Map();
+const lastSeenOpensea = new Map();
 const lastSeenBlur     = new Map();
 
 /**
@@ -94,7 +94,7 @@ function calculateBidWithMargin(observedEth) {
 }
 
 /**
- * Called whenever we detect a new or changed OpenSea JSON for `contract`.
+ * Called whenever we detect a new or changed Opensea JSON for `contract`.
  * Logs the “First-time” or “changed” message (already printed up above),
  * then extracts price_per_nft.readable → recalc the Blur bid, compares to Redis, and updates if needed.
  *
@@ -102,14 +102,14 @@ function calculateBidWithMargin(observedEth) {
  * @param {string} rawJson      – the new raw JSON string from Redis
  * @param {RedisClient} redisClient
  */
-async function processFromOpenSea(contract, rawJson, redisClient) {
+async function processFromOpensea(contract, rawJson, redisClient) {
   let osOfferEth;
   try {
     const obj = JSON.parse(rawJson);
     osOfferEth = parseFloat(obj.price_per_nft.readable);
     if (isNaN(osOfferEth)) throw new Error("price_per_nft.readable is NaN");
   } catch (err) {
-    console.warn(`• [${contract}] Malformed OpenSea JSON → skipping:`, err.message);
+    console.warn(`• [${contract}] Malformed Opensea JSON → skipping:`, err.message);
     return;
   }
 
@@ -139,7 +139,7 @@ async function processFromOpenSea(contract, rawJson, redisClient) {
     console.log(`↳ [${contract}] No prior Blur bid (OS trigger), will place new @ ${bidEth.toFixed(2)} ETH`);
   }
 
-  await submitNewBlurBid(contract, bidEth, redisClient, "(triggered by OpenSea)");
+  await submitNewBlurBid(contract, bidEth, redisClient, "(triggered by Opensea)");
 }
 
 /**
@@ -279,7 +279,7 @@ async function submitNewBlurBid(contract, bidEth, redisClient, note) {
 }
 
 /**
- * MAIN: connect to Redis, print a startup message, initialize lastSeen maps (with logs for OpenSea only),
+ * MAIN: connect to Redis, print a startup message, initialize lastSeen maps (with logs for Opensea only),
  * then poll every POLL_INTERVAL ms for any raw-string change on both key patterns.
  * – Does NOT act on existing Blur keys at startup; only on their changes after startup.
  */
@@ -291,7 +291,7 @@ async function main() {
 
   // ─── INITIAL POPULATION ─────────────────────────────────────────────────────────
 
-  // 1) Load and process all existing OpenSea-offer keys
+  // 1) Load and process all existing Opensea-offer keys
   {
     const osKeys = await client.keys(OS_PATTERN);
     for (const key of osKeys) {
@@ -301,9 +301,9 @@ async function main() {
       if (!raw) continue;
 
       const trimmed = raw.trim();
-      lastSeenOpenSea.set(contract, trimmed);
-      console.log(`• [${contract}] First-time OpenSea data: ${trimmed}`);
-      await processFromOpenSea(contract, trimmed, client);
+      lastSeenOpensea.set(contract, trimmed);
+      console.log(`• [${contract}] First-time Opensea data: ${trimmed}`);
+      await processFromOpensea(contract, trimmed, client);
     }
   }
 
@@ -330,7 +330,7 @@ async function main() {
 
   setInterval(async () => {
     try {
-      // ─── 1) Check OpenSea keys ─────────────────────────────────────────────────
+      // ─── 1) Check Opensea keys ─────────────────────────────────────────────────
       const osKeys = await client.keys(OS_PATTERN);
       for (const key of osKeys) {
         // e.g. "c-offer:opensea:0xAbC123..."
@@ -339,22 +339,22 @@ async function main() {
         if (!raw) continue;
 
         const rawTrim = raw.trim();
-        const prevRaw = lastSeenOpenSea.get(contract);
+        const prevRaw = lastSeenOpensea.get(contract);
 
         if (prevRaw === undefined) {
           // Brand-new key not seen on startup
-          console.log(`• [${contract}] First-time OpenSea data: ${rawTrim}`);
-          lastSeenOpenSea.set(contract, rawTrim);
-          await processFromOpenSea(contract, rawTrim, client);
+          console.log(`• [${contract}] First-time Opensea data: ${rawTrim}`);
+          lastSeenOpensea.set(contract, rawTrim);
+          await processFromOpensea(contract, rawTrim, client);
         } else if (prevRaw !== rawTrim) {
           // Existing key whose value changed
           console.log(
-            `• [${contract}] OpenSea data changed:\n` +
+            `• [${contract}] Opensea data changed:\n` +
             `   old → ${prevRaw}\n` +
             `   new → ${rawTrim}`
           );
-          lastSeenOpenSea.set(contract, rawTrim);
-          await processFromOpenSea(contract, rawTrim, client);
+          lastSeenOpensea.set(contract, rawTrim);
+          await processFromOpensea(contract, rawTrim, client);
         }
         // Otherwise: prevRaw === rawTrim → no change → do nothing
       }

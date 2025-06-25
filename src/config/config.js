@@ -12,7 +12,7 @@ const config = {
   network: {
     rpcUrl:
       process.env.RPC_URL ||
-      'https://eth-mainnet.g.alchemy.com/v2/your-api-key',
+      `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
     chainId: parseInt(process.env.CHAIN_ID || '1'),
     maxGasPrice: process.env.MAX_GAS_PRICE || '100',
     maxPriorityFee: process.env.MAX_PRIORITY_FEE || '2',
@@ -87,6 +87,17 @@ const config = {
       LOW: 3,
     },
   },
+
+  // Redis configuration
+  redis: {
+    url: process.env.REDIS_URL || 'redis://localhost:6379',
+    keyPrefix: process.env.REDIS_PREFIX || 'arbitra:',
+    ttl: {
+      topBid: parseInt(process.env.REDIS_TTL_TOP_BID || '300'), // 5 minutes
+      floorPrice: parseInt(process.env.REDIS_TTL_FLOOR || '60'), // 1 minute
+      collectionState: parseInt(process.env.REDIS_TTL_STATE || '3600'), // 1 hour
+    },
+  },
 };
 
 // Validate required configuration
@@ -129,7 +140,7 @@ const validateConfig = () => {
     parseFloat(config.bid.opensea.minBidAmount) >=
     parseFloat(config.bid.opensea.maxBidAmount)
   ) {
-    throw new Error('OpenSea min bid amount must be less than max bid amount');
+    throw new Error('Opensea min bid amount must be less than max bid amount');
   }
 };
 

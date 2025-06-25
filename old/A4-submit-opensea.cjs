@@ -2,7 +2,7 @@
 /**
  * build-only.js
  *
- * Calls OpenSea’s “Build Criteria Offer” endpoint and logs the full JSON response.
+ * Calls Opensea’s “Build Criteria Offer” endpoint and logs the full JSON response.
  *
  * USAGE:
  *   node build-only.js
@@ -12,7 +12,7 @@
  *
  * CONFIGURE THESE VARIABLES:
  */
-const API_KEY          = 'xyz';  // <— your OpenSea API key
+const API_KEY          = 'xyz';  // <— your Opensea API key
 const OFFERER_ADDRESS  = '0x8619aD8B126Cc45D78C9D1F04c9cB2451D3e5D52';
 const PROTOCOL_ADDRESS = '0x0000000000000068f116a894984e2db1123eb395';
 const COLLECTION_SLUG  = 'proof-moonbirds';   // <— change to whatever collection slug you need

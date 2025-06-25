@@ -1,6 +1,6 @@
 # Arbitra-2
 
-A sophisticated NFT trading automation system that manages bidding and offer acceptance across OpenSea and Blur marketplaces.
+A sophisticated NFT trading automation system that manages bidding and offer acceptance across Opensea and Blur marketplaces.
 
 ## Project Structure
 
@@ -15,13 +15,19 @@ src/
 
 ## Features
 
-- Bid management for both OpenSea and Blur
+- Bid management for both Opensea and Blur
 - Automatic offer acceptance
 - Gas-aware bid calculations
 - Order invalidation monitoring
 - Priority-based operation queue
 - Comprehensive logging
 - Error handling and recovery
+
+## Prerequisites
+
+- Node.js / NPM
+- Redis
+- Opensea, Blur, Alchemy API keys
 
 ## Setup
 
@@ -45,7 +51,7 @@ The system is configured through environment variables. See `.env.example` for a
 - `RPC_URL`: Your Ethereum node RPC URL
 - `PRIVATE_KEY`: Your wallet's private key
 - `WALLET_ADDRESS`: Your wallet address
-- `OPENSEA_API_KEY`: OpenSea API key
+- `OPENSEA_API_KEY`: Opensea API key
 - `BLUR_API_KEY`: Blur API key
 - `ALCHEMY_API_KEY`: Alchemy API key
 
@@ -78,6 +84,7 @@ npm run format
 ### BidManager
 
 Handles all bid-related operations:
+
 - Bid calculation with gas consideration
 - Order invalidation monitoring
 - Priority-based bid submission
@@ -86,6 +93,7 @@ Handles all bid-related operations:
 ### NftAcceptor
 
 Manages NFT acceptance:
+
 - Wallet monitoring
 - On-chain transaction submission
 - Gas optimization
